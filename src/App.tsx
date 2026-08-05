@@ -4,10 +4,11 @@ import { CoachProfilePage } from './components/CoachProfilePage';
 import { BookingFlow } from './components/BookingFlow';
 import { StudentDashboard } from './components/StudentDashboard';
 import { CoachDashboard } from './components/CoachDashboard';
-import { Shield, Briefcase, GraduationCap } from 'lucide-react';
+import { AuthScreen } from './components/AuthScreen';
+import { Shield, Briefcase, GraduationCap, LogOut } from 'lucide-react';
 
 function App() {
-  const { currentView, currentUserRole, setRole, setView } = useAppState();
+  const { currentView, currentUserRole, setRole, setView, user, logOut } = useAppState();
 
   const renderView = () => {
     switch (currentView) {
@@ -35,7 +36,7 @@ function App() {
           
           {/* Logo */}
           <div 
-            onClick={() => setView('discovery')}
+            onClick={() => user && setView('discovery')}
             className="flex items-center space-x-2.5 cursor-pointer group"
           >
             <div className="w-9 h-9 rounded-xl bg-indigo-650 flex items-center justify-center text-white shadow-lg shadow-indigo-550/10 group-hover:scale-105 transition-transform">
@@ -47,77 +48,97 @@ function App() {
             </div>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1">
-            <button 
-              onClick={() => setView('discovery')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                currentView === 'discovery' || currentView === 'profile' || currentView === 'booking'
-                  ? 'bg-slate-900 text-white' 
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Find Coaches
-            </button>
-            <button 
-              onClick={() => setView('student-dashboard')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                currentView === 'student-dashboard'
-                  ? 'bg-slate-900 text-white' 
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Student Dashboard
-            </button>
-            <button 
-              onClick={() => setView('coach-dashboard')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                currentView === 'coach-dashboard'
-                  ? 'bg-slate-900 text-white' 
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Coach Workspace
-            </button>
-          </nav>
+          {user && (
+            <>
+              {/* Navigation Links */}
+              <nav className="hidden md:flex items-center space-x-1">
+                <button 
+                  onClick={() => setView('discovery')}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                    currentView === 'discovery' || currentView === 'profile' || currentView === 'booking'
+                      ? 'bg-slate-900 text-white' 
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Find Coaches
+                </button>
+                <button 
+                  onClick={() => setView('student-dashboard')}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                    currentView === 'student-dashboard'
+                      ? 'bg-slate-900 text-white' 
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Student Dashboard
+                </button>
+                <button 
+                  onClick={() => setView('coach-dashboard')}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                    currentView === 'coach-dashboard'
+                      ? 'bg-slate-900 text-white' 
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Coach Workspace
+                </button>
+              </nav>
 
-          {/* User Role Switcher Controls */}
-          <div className="flex items-center space-x-4">
-            
-            {/* Mode Switcher pill */}
-            <div className="flex bg-slate-900 p-0.5 rounded-lg border border-slate-850 text-xxs font-bold">
-              <button
-                onClick={() => setRole('student')}
-                className={`px-2.5 py-1 rounded-md transition-all-300 flex items-center space-x-1 ${
-                  currentUserRole === 'student'
-                    ? 'bg-indigo-650 text-white shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <GraduationCap className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Student View</span>
-              </button>
-              <button
-                onClick={() => setRole('coach')}
-                className={`px-2.5 py-1 rounded-md transition-all-300 flex items-center space-x-1 ${
-                  currentUserRole === 'coach'
-                    ? 'bg-indigo-650 text-white shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <Briefcase className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Coach View</span>
-              </button>
-            </div>
+              {/* User Role Switcher & Auth status */}
+              <div className="flex items-center space-x-4">
+                
+                {/* Mode Switcher pill */}
+                <div className="flex bg-slate-900 p-0.5 rounded-lg border border-slate-850 text-xxs font-bold">
+                  <button
+                    onClick={() => setRole('student')}
+                    className={`px-2.5 py-1 rounded-md transition-all-300 flex items-center space-x-1 ${
+                      currentUserRole === 'student'
+                        ? 'bg-indigo-650 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <GraduationCap className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Student View</span>
+                  </button>
+                  <button
+                    onClick={() => setRole('coach')}
+                    className={`px-2.5 py-1 rounded-md transition-all-300 flex items-center space-x-1 ${
+                      currentUserRole === 'coach'
+                        ? 'bg-indigo-650 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <Briefcase className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Coach View</span>
+                  </button>
+                </div>
 
-          </div>
+                {/* Profile Badge & Sign out */}
+                <div className="flex items-center space-x-3 border-l border-slate-850 pl-4">
+                  <div className="hidden lg:flex flex-col text-right">
+                    <span className="text-xs font-bold text-white leading-none">{user.name}</span>
+                    <span className="text-xxxxs text-slate-500 font-semibold uppercase tracking-wider mt-0.5">{user.role} mode</span>
+                  </div>
+                  
+                  <button 
+                    onClick={logOut}
+                    className="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-850 text-slate-400 hover:text-white rounded-xl transition-all-300"
+                    title="Sign Out"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+
+              </div>
+            </>
+          )}
 
         </div>
       </header>
 
       {/* Main Content Viewport */}
       <main className="flex-grow">
-        {renderView()}
+        {user ? renderView() : <AuthScreen />}
       </main>
 
       {/* Footer */}

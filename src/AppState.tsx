@@ -2,6 +2,19 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Coach, Session, StudentGoal, Review } from './types';
 import { INITIAL_COACHES, INITIAL_SESSIONS, INITIAL_GOALS } from './mockData';
 import { calculateTrustScore } from './trustCalculator';
+import { isFirebaseConfigured, auth, db } from './firebaseConfig';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { 
+  collection, 
+  doc, 
+  getDoc, 
+  setDoc, 
+  updateDoc, 
+  addDoc, 
+  query, 
+  where, 
+  onSnapshot 
+} from 'firebase/firestore';
 
 interface AppContextType {
   coaches: Coach[];
@@ -11,6 +24,7 @@ interface AppContextType {
   currentView: 'discovery' | 'profile' | 'booking' | 'student-dashboard' | 'coach-dashboard';
   selectedCoach: Coach | null;
   activeCoachId: string;
+  user: { uid: string; email: string; name: string; role: 'student' | 'coach' } | null;
   setRole: (role: 'student' | 'coach') => void;
   setView: (view: 'discovery' | 'profile' | 'booking' | 'student-dashboard' | 'coach-dashboard', coach?: Coach | null) => void;
   bookSession: (coachId: string, date: string, timeSlot: string) => void;
@@ -21,44 +35,181 @@ interface AppContextType {
   addGoal: (title: string, targetValue: number, unit: string) => void;
   updateGoalProgress: (goalId: string, value: number) => void;
   setActiveCoachId: (id: string) => void;
+  logInMockUser: (mockUser: any) => void;
+  logOut: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Load from localStorage or use initial mock data
-  const [coaches, setCoaches] = useState<Coach[]>(() => {
-    const saved = localStorage.getItem('trustcoach_coaches');
-    return saved ? JSON.parse(saved) : INITIAL_COACHES;
-  });
+  // Authentication state
+  const [user, setUser] = useState<{ uid: string; email: string; name: string; role: 'student' | 'coach' } | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
-  const [sessions, setSessions] = useState<Session[]>(() => {
-    const saved = localStorage.getItem('trustcoach_sessions');
-    return saved ? JSON.parse(saved) : INITIAL_SESSIONS;
-  });
-
-  const [goals, setGoals] = useState<StudentGoal[]>(() => {
-    const saved = localStorage.getItem('trustcoach_goals');
-    return saved ? JSON.parse(saved) : INITIAL_GOALS;
-  });
+  // Database lists
+  const [coaches, setCoaches] = useState<Coach[]>(INITIAL_COACHES);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [goals, setGoals] = useState<StudentGoal[]>([]);
 
   const [currentUserRole, setCurrentUserRole] = useState<'student' | 'coach'>('student');
   const [currentView, setCurrentView] = useState<'discovery' | 'profile' | 'booking' | 'student-dashboard' | 'coach-dashboard'>('discovery');
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
-  const [activeCoachId, setActiveCoachId] = useState<string>('coach-5'); // Default to Rajesh (new coach) for coach view demo
+  const [activeCoachId, setActiveCoachId] = useState<string>('coach-5'); // Rajesh
 
-  // Sync to localStorage
+  // 1. Listen to Auth State
   useEffect(() => {
-    localStorage.setItem('trustcoach_coaches', JSON.stringify(coaches));
-  }, [coaches]);
+    if (!isFirebaseConfigured) {
+      // Offline fallback: check localStorage
+      const savedUser = localStorage.getItem('trustcoach_mock_user');
+      if (savedUser) {
+        const u = JSON.parse(savedUser);
+        setUser(u);
+        setCurrentUserRole(u.role);
+      }
+      setAuthLoading(false);
+      return;
+    }
+
+    // Real Firebase listener
+    const unsubscribe = onAuthStateChanged(auth!, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Fetch custom role details from Firestore public.profiles
+        const userDocRef = doc(db!, 'users', firebaseUser.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        let role: 'student' | 'coach' = 'student';
+        let name = firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User';
+
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          role = data.role || 'student';
+          name = data.name || name;
+        }
+
+        const authenticatedUser = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email || '',
+          name,
+          role
+        };
+
+        setUser(authenticatedUser);
+        setCurrentUserRole(role);
+        if (role === 'coach') {
+          setCurrentView('coach-dashboard');
+        } else {
+          setCurrentView('discovery');
+        }
+      } else {
+        setUser(null);
+      }
+      setAuthLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // 2. Fetch/Sync Databases based on User and Offline Mode
+  useEffect(() => {
+    // If not logged in, we only show local coaches
+    if (!user) {
+      setSessions([]);
+      setGoals([]);
+      return;
+    }
+
+    if (!isFirebaseConfigured) {
+      // LocalStorage Mode database sync
+      const savedCoaches = localStorage.getItem('trustcoach_coaches');
+      const savedSessions = localStorage.getItem('trustcoach_sessions');
+      const savedGoals = localStorage.getItem('trustcoach_goals');
+
+      setCoaches(savedCoaches ? JSON.parse(savedCoaches) : INITIAL_COACHES);
+      setSessions(savedSessions ? JSON.parse(savedSessions) : INITIAL_SESSIONS);
+      setGoals(savedGoals ? JSON.parse(savedGoals) : INITIAL_GOALS);
+      return;
+    }
+
+    // Firebase Firestore Realtime Sync
+    // A. Sync Coaches and auto-seed if empty
+    const unsubscribeCoaches = onSnapshot(collection(db!, 'coaches'), async (snapshot) => {
+      if (snapshot.empty) {
+        // Auto-seed database with initial coaches
+        for (const coach of INITIAL_COACHES) {
+          await setDoc(doc(db!, 'coaches', coach.id), coach);
+        }
+      } else {
+        const coachesList = snapshot.docs.map(d => d.data() as Coach);
+        // Ensure trust score is calculated based on current state
+        coachesList.forEach(c => {
+          c.trustScore = calculateTrustScore(c.trustComponents);
+        });
+        setCoaches(coachesList);
+      }
+    });
+
+    // B. Sync Sessions (Filtered by student or coach ID)
+    const sessionsQuery = user.role === 'student'
+      ? query(collection(db!, 'sessions'), where('studentId', '==', user.uid))
+      : query(collection(db!, 'sessions'), where('coachId', '==', user.uid));
+
+    const unsubscribeSessions = onSnapshot(sessionsQuery, (snapshot) => {
+      const sessionsList = snapshot.docs.map(d => ({ id: d.id, ...d.data() }) as Session);
+      setSessions(sessionsList);
+    });
+
+    // C. Sync Goals (For Student)
+    const goalsQuery = query(collection(db!, 'goals'), where('studentId', '==', user.uid));
+    const unsubscribeGoals = onSnapshot(goalsQuery, (snapshot) => {
+      const goalsList = snapshot.docs.map(d => ({ id: d.id, ...d.data() }) as StudentGoal);
+      setGoals(goalsList);
+    });
+
+    return () => {
+      unsubscribeCoaches();
+      unsubscribeSessions();
+      unsubscribeGoals();
+    };
+  }, [user]);
+
+  // Local storage sync for offline mode
+  useEffect(() => {
+    if (!isFirebaseConfigured && user) {
+      localStorage.setItem('trustcoach_coaches', JSON.stringify(coaches));
+    }
+  }, [coaches, user]);
 
   useEffect(() => {
-    localStorage.setItem('trustcoach_sessions', JSON.stringify(sessions));
-  }, [sessions]);
+    if (!isFirebaseConfigured && user) {
+      localStorage.setItem('trustcoach_sessions', JSON.stringify(sessions));
+    }
+  }, [sessions, user]);
 
   useEffect(() => {
-    localStorage.setItem('trustcoach_goals', JSON.stringify(goals));
-  }, [goals]);
+    if (!isFirebaseConfigured && user) {
+      localStorage.setItem('trustcoach_goals', JSON.stringify(goals));
+    }
+  }, [goals, user]);
+
+  const logInMockUser = (mockUser: any) => {
+    setUser(mockUser);
+    setCurrentUserRole(mockUser.role);
+    if (mockUser.role === 'coach') {
+      setCurrentView('coach-dashboard');
+    } else {
+      setCurrentView('discovery');
+    }
+  };
+
+  const logOut = async () => {
+    if (isFirebaseConfigured) {
+      await signOut(auth!);
+    } else {
+      localStorage.removeItem('trustcoach_mock_user');
+      setUser(null);
+    }
+    setCurrentView('discovery');
+  };
 
   const setRole = (role: 'student' | 'coach') => {
     setCurrentUserRole(role);
@@ -76,17 +227,16 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const bookSession = (coachId: string, date: string, timeSlot: string) => {
+  const bookSession = async (coachId: string, date: string, timeSlot: string) => {
     const coach = coaches.find(c => c.id === coachId);
-    if (!coach) return;
+    if (!coach || !user) return;
 
-    const newSession: Session = {
-      id: `sess-${Date.now()}`,
+    const newSession: Omit<Session, 'id'> = {
       coachId: coach.id,
       coachName: coach.name,
       coachAvatar: coach.avatar,
-      studentId: 'student-1',
-      studentName: 'Rahul Dev',
+      studentId: user.uid,
+      studentName: user.name,
       date,
       timeSlot,
       price: coach.pricePerSession,
@@ -95,69 +245,95 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       ratingLeft: false
     };
 
-    setSessions(prev => [newSession, ...prev]);
+    if (isFirebaseConfigured) {
+      await addDoc(collection(db!, 'sessions'), newSession);
+    } else {
+      const localSession: Session = { id: `sess-${Date.now()}`, ...newSession };
+      setSessions(prev => [localSession, ...prev]);
+    }
     setCurrentView('student-dashboard');
   };
 
-  const confirmSession = (sessionId: string) => {
-    setSessions(prev => prev.map(s => {
-      if (s.id === sessionId) {
-        // Mark as completed, release escrow
-        const updatedSession = { ...s, status: 'completed' as const, escrowStatus: 'released' as const };
-        
-        // Update the coach's session completed count
-        setCoaches(prevCoaches => prevCoaches.map(c => {
-          if (c.id === s.coachId) {
-            const updatedComponents = {
-              ...c.trustComponents,
-              sessionsCompletedCount: c.trustComponents.sessionsCompletedCount + 1
-            };
-            const updatedScore = calculateTrustScore(updatedComponents);
-            return {
-              ...c,
-              trustComponents: updatedComponents,
-              trustScore: updatedScore
-            };
-          }
-          return c;
-        }));
+  const confirmSession = async (sessionId: string) => {
+    const session = sessions.find(s => s.id === sessionId);
+    if (!session) return;
 
-        return updatedSession;
+    // Update session status in DB
+    if (isFirebaseConfigured) {
+      await updateDoc(doc(db!, 'sessions', sessionId), {
+        status: 'completed',
+        escrowStatus: 'released'
+      });
+      // Increment coach session completed count in Firestore
+      const coachRef = doc(db!, 'coaches', session.coachId);
+      const coachDoc = await getDoc(coachRef);
+      if (coachDoc.exists()) {
+        const c = coachDoc.data() as Coach;
+        const updatedComponents = {
+          ...c.trustComponents,
+          sessionsCompletedCount: c.trustComponents.sessionsCompletedCount + 1
+        };
+        await updateDoc(coachRef, {
+          trustComponents: updatedComponents
+        });
       }
-      return s;
-    }));
+    } else {
+      setSessions(prev => prev.map(s => {
+        if (s.id === sessionId) {
+          return { ...s, status: 'completed' as const, escrowStatus: 'released' as const };
+        }
+        return s;
+      }));
+      setCoaches(prevCoaches => prevCoaches.map(c => {
+        if (c.id === session.coachId) {
+          const updatedComponents = {
+            ...c.trustComponents,
+            sessionsCompletedCount: c.trustComponents.sessionsCompletedCount + 1
+          };
+          return { ...c, trustComponents: updatedComponents, trustScore: calculateTrustScore(updatedComponents) };
+        }
+        return c;
+      }));
+    }
   };
 
-  const disputeSession = (sessionId: string) => {
-    setSessions(prev => prev.map(s => {
-      if (s.id === sessionId) {
-        // Mark as disputed
-        const updatedSession = { ...s, status: 'disputed' as const };
-        
-        // Penalize the coach by marking noRefundDisputes to false (instantly penalty)
-        setCoaches(prevCoaches => prevCoaches.map(c => {
-          if (c.id === s.coachId) {
-            const updatedComponents = {
-              ...c.trustComponents,
-              noRefundDisputes: false
-            };
-            const updatedScore = calculateTrustScore(updatedComponents);
-            return {
-              ...c,
-              trustComponents: updatedComponents,
-              trustScore: updatedScore
-            };
-          }
-          return c;
-        }));
+  const disputeSession = async (sessionId: string) => {
+    const session = sessions.find(s => s.id === sessionId);
+    if (!session) return;
 
-        return updatedSession;
+    if (isFirebaseConfigured) {
+      await updateDoc(doc(db!, 'sessions', sessionId), {
+        status: 'disputed'
+      });
+      // Flag coach disputes
+      const coachRef = doc(db!, 'coaches', session.coachId);
+      const coachDoc = await getDoc(coachRef);
+      if (coachDoc.exists()) {
+        const c = coachDoc.data() as Coach;
+        const updatedComponents = {
+          ...c.trustComponents,
+          noRefundDisputes: false
+        };
+        await updateDoc(coachRef, {
+          trustComponents: updatedComponents
+        });
       }
-      return s;
-    }));
+    } else {
+      setSessions(prev => prev.map(s => s.id === sessionId ? { ...s, status: 'disputed' as const } : s));
+      setCoaches(prevCoaches => prevCoaches.map(c => {
+        if (c.id === session.coachId) {
+          const updatedComponents = {
+            ...c.trustComponents,
+            noRefundDisputes: false
+          };
+          return { ...c, trustComponents: updatedComponents, trustScore: calculateTrustScore(updatedComponents) };
+        }
+        return c;
+      }));
+    }
   };
 
-  const submitReview = (sessionId: string, rating: number, comment: string) => {
+  const submitReview = async (sessionId: string, rating: number, comment: string) => {
     const session = sessions.find(s => s.id === sessionId);
     if (!session) return;
 
@@ -170,65 +346,113 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       verifiedSession: true
     };
 
-    setCoaches(prevCoaches => prevCoaches.map(c => {
-      if (c.id === session.coachId) {
+    if (isFirebaseConfigured) {
+      await updateDoc(doc(db!, 'sessions', sessionId), {
+        ratingLeft: true
+      });
+      const coachRef = doc(db!, 'coaches', session.coachId);
+      const coachDoc = await getDoc(coachRef);
+      if (coachDoc.exists()) {
+        const c = coachDoc.data() as Coach;
         const updatedReviews = [newReview, ...c.reviews];
-        // Calculate new rating average
         const totalRating = updatedReviews.reduce((sum, r) => sum + r.rating, 0);
         const avgRating = parseFloat((totalRating / updatedReviews.length).toFixed(1));
-
-        return {
-          ...c,
+        await updateDoc(coachRef, {
           reviews: updatedReviews,
           rating: avgRating
-        };
+        });
       }
-      return c;
-    }));
-
-    setSessions(prev => prev.map(s => s.id === sessionId ? { ...s, ratingLeft: true } : s));
+    } else {
+      setSessions(prev => prev.map(s => s.id === sessionId ? { ...s, ratingLeft: true } : s));
+      setCoaches(prevCoaches => prevCoaches.map(c => {
+        if (c.id === session.coachId) {
+          const updatedReviews = [newReview, ...c.reviews];
+          const totalRating = updatedReviews.reduce((sum, r) => sum + r.rating, 0);
+          const avgRating = parseFloat((totalRating / updatedReviews.length).toFixed(1));
+          return { ...c, reviews: updatedReviews, rating: avgRating };
+        }
+        return c;
+      }));
+    }
   };
 
-  const uploadCertificate = (coachId: string, certName: string) => {
-    setCoaches(prevCoaches => prevCoaches.map(c => {
-      if (c.id === coachId) {
+  const uploadCertificate = async (coachId: string, certName: string) => {
+    if (isFirebaseConfigured) {
+      const coachRef = doc(db!, 'coaches', coachId);
+      const coachDoc = await getDoc(coachRef);
+      if (coachDoc.exists()) {
+        const c = coachDoc.data() as Coach;
         const updatedCerts = [...c.certificates, certName];
         const updatedComponents = {
           ...c.trustComponents,
           certificatesUploaded: true
         };
-        const updatedScore = calculateTrustScore(updatedComponents);
-        return {
-          ...c,
+        await updateDoc(coachRef, {
           certificates: updatedCerts,
-          trustComponents: updatedComponents,
-          trustScore: updatedScore
-        };
+          trustComponents: updatedComponents
+        });
       }
-      return c;
-    }));
+    } else {
+      setCoaches(prevCoaches => prevCoaches.map(c => {
+        if (c.id === coachId) {
+          const updatedCerts = [...c.certificates, certName];
+          const updatedComponents = {
+            ...c.trustComponents,
+            certificatesUploaded: true
+          };
+          return {
+            ...c,
+            certificates: updatedCerts,
+            trustComponents: updatedComponents,
+            trustScore: calculateTrustScore(updatedComponents)
+          };
+        }
+        return c;
+      }));
+    }
   };
 
-  const addGoal = (title: string, targetValue: number, unit: string) => {
-    const newGoal: StudentGoal = {
-      id: `goal-${Date.now()}`,
+  const addGoal = async (title: string, targetValue: number, unit: string) => {
+    if (!user) return;
+
+    const newGoal: Omit<StudentGoal, 'id'> = {
+      studentId: user.uid,
       title,
       currentValue: 0,
       targetValue,
       unit
-    };
-    setGoals(prev => [...prev, newGoal]);
+    } as any;
+
+    if (isFirebaseConfigured) {
+      await addDoc(collection(db!, 'goals'), newGoal);
+    } else {
+      const localGoal: StudentGoal = { id: `goal-${Date.now()}`, ...newGoal } as any;
+      setGoals(prev => [...prev, localGoal]);
+    }
   };
 
-  const updateGoalProgress = (goalId: string, value: number) => {
-    setGoals(prev => prev.map(g => {
-      if (g.id === goalId) {
-        const nextVal = Math.min(g.targetValue, Math.max(0, value));
-        return { ...g, currentValue: nextVal };
-      }
-      return g;
-    }));
+  const updateGoalProgress = async (goalId: string, value: number) => {
+    const goal = goals.find(g => g.id === goalId);
+    if (!goal) return;
+    const nextVal = Math.min(goal.targetValue, Math.max(0, value));
+
+    if (isFirebaseConfigured) {
+      await updateDoc(doc(db!, 'goals', goalId), {
+        currentValue: nextVal
+      });
+    } else {
+      setGoals(prev => prev.map(g => g.id === goalId ? { ...g, currentValue: nextVal } : g));
+    }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center space-y-4">
+        <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-slate-500 text-xs font-semibold">Initializing TrustCoach secure gateway...</p>
+      </div>
+    );
+  }
 
   return (
     <AppContext.Provider value={{
@@ -239,6 +463,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       currentView,
       selectedCoach,
       activeCoachId,
+      user,
       setRole,
       setView,
       bookSession,
@@ -248,7 +473,9 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       uploadCertificate,
       addGoal,
       updateGoalProgress,
-      setActiveCoachId
+      setActiveCoachId,
+      logInMockUser,
+      logOut
     }}>
       {children}
     </AppContext.Provider>
