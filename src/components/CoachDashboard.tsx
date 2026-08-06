@@ -12,7 +12,7 @@ export const CoachDashboard: React.FC = () => {
     uploadCertificate 
   } = useAppState();
 
-  const [certNameInput, setCertNameInput] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
   // Get active coach details
@@ -62,10 +62,15 @@ export const CoachDashboard: React.FC = () => {
 
   const handleCertSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!certNameInput.trim()) return;
+    if (!selectedFile) return;
     
-    uploadCertificate(currentCoach.id, certNameInput);
-    setCertNameInput('');
+    let displayName = selectedFile.name;
+    // Clean up file name (e.g., aws_solutions_architect.pdf -> Aws Solutions Architect)
+    displayName = displayName.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ");
+    displayName = displayName.replace(/\b\w/g, c => c.toUpperCase());
+    
+    uploadCertificate(currentCoach.id, displayName);
+    setSelectedFile(null);
     setUploadSuccess(true);
     setTimeout(() => setUploadSuccess(false), 3000);
   };
@@ -167,22 +172,36 @@ export const CoachDashboard: React.FC = () => {
                     
                     {tip.action === 'upload' && (
                       <div className="mt-2.5 pt-2 border-t border-slate-800">
-                        <form onSubmit={handleCertSubmit} className="flex gap-2">
-                          <input 
-                            type="text"
-                            required
-                            placeholder="Cert Name (e.g. AWS Certified)"
-                            value={certNameInput}
-                            onChange={(e) => setCertNameInput(e.target.value)}
-                            className="flex-grow p-1.5 bg-slate-900 border border-slate-800 rounded text-[10px] text-slate-200 placeholder-slate-650 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                          />
-                          <button 
-                            type="submit"
-                            className="bg-indigo-600 hover:bg-indigo-600 px-3 py-1.5 text-white font-bold rounded text-[10px] transition-colors shrink-0 flex items-center space-x-1"
-                          >
-                            <Upload className="w-3 h-3" />
-                            <span>Upload</span>
-                          </button>
+                        <form onSubmit={handleCertSubmit} className="flex flex-col gap-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <label className="flex-grow flex items-center justify-center border border-dashed border-slate-700 hover:border-slate-500 bg-slate-900 rounded-lg p-2 cursor-pointer transition-all duration-300">
+                              <input 
+                                type="file"
+                                required
+                                accept=".pdf,.png,.jpg,.jpeg"
+                                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                                className="hidden"
+                              />
+                              <div className="flex items-center space-x-1.5 text-slate-400 hover:text-slate-200">
+                                <Upload className="w-3.5 h-3.5 text-indigo-400" />
+                                <span className="text-[10px] font-medium truncate max-w-[150px]">
+                                  {selectedFile ? selectedFile.name : 'Choose Certificate File'}
+                                </span>
+                              </div>
+                            </label>
+                            
+                            <button 
+                              type="submit"
+                              disabled={!selectedFile}
+                              className={`px-3 py-2 text-white font-bold rounded-lg text-[10px] transition-colors shrink-0 flex items-center space-x-1 ${
+                                selectedFile
+                                  ? 'bg-indigo-600 hover:bg-indigo-500 cursor-pointer'
+                                  : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-800'
+                              }`}
+                            >
+                              <span>Upload</span>
+                            </button>
+                          </div>
                         </form>
                         {uploadSuccess && (
                           <span className="text-[10px] text-emerald-400 mt-1 block">Certificate uploaded! Trust Score updated (+20)</span>
