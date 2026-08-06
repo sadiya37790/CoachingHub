@@ -10,7 +10,7 @@ export const BookingFlow: React.FC = () => {
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('trustcoach_temp_slot');
+    const saved = sessionStorage.getItem('trustcoach_temp_slot');
     if (saved) {
       setSelectedSlot(JSON.parse(saved));
     }
@@ -42,7 +42,7 @@ export const BookingFlow: React.FC = () => {
       // Complete booking state update
       setTimeout(() => {
         bookSession(selectedCoach.id, selectedSlot.date, selectedSlot.time);
-        localStorage.removeItem('trustcoach_temp_slot');
+        sessionStorage.removeItem('trustcoach_temp_slot');
       }, 1500);
     }, 2000);
   };

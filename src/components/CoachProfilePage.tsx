@@ -43,8 +43,8 @@ export const CoachProfilePage: React.FC = () => {
     // Go to booking flow with selection
     setView('booking', selectedCoach);
     // We store the slot details globally or pass them along. We can pass selectedCoach, and the booking component will use the selected slot from a temporary or state location.
-    // Let's store slot selection in localStorage for simplicity so the booking flow can fetch it!
-    localStorage.setItem('trustcoach_temp_slot', JSON.stringify(selectedSlot));
+    // Let's store slot selection in sessionStorage for simplicity so the booking flow can fetch it!
+    sessionStorage.setItem('trustcoach_temp_slot', JSON.stringify(selectedSlot));
   };
 
   const getAvatarGradient = (avatar: string) => {

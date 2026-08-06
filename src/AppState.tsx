@@ -59,8 +59,8 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // 1. Listen to Auth State
   useEffect(() => {
     if (!isFirebaseConfigured) {
-      // Offline fallback: check localStorage
-      const savedUser = localStorage.getItem('trustcoach_mock_user');
+      // Offline fallback: check sessionStorage
+      const savedUser = sessionStorage.getItem('trustcoach_mock_user');
       if (savedUser) {
         const u = JSON.parse(savedUser);
         setUser(u);
@@ -120,9 +120,9 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     if (!isFirebaseConfigured) {
       // LocalStorage Mode database sync
-      const savedCoaches = localStorage.getItem('trustcoach_coaches');
-      const savedSessions = localStorage.getItem('trustcoach_sessions');
-      const savedGoals = localStorage.getItem('trustcoach_goals');
+      const savedCoaches = sessionStorage.getItem('trustcoach_coaches');
+      const savedSessions = sessionStorage.getItem('trustcoach_sessions');
+      const savedGoals = sessionStorage.getItem('trustcoach_goals');
 
       setCoaches(savedCoaches ? JSON.parse(savedCoaches) : INITIAL_COACHES);
       setSessions(savedSessions ? JSON.parse(savedSessions) : INITIAL_SESSIONS);
@@ -175,19 +175,19 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Local storage sync for offline mode
   useEffect(() => {
     if (!isFirebaseConfigured && user) {
-      localStorage.setItem('trustcoach_coaches', JSON.stringify(coaches));
+      sessionStorage.setItem('trustcoach_coaches', JSON.stringify(coaches));
     }
   }, [coaches, user]);
 
   useEffect(() => {
     if (!isFirebaseConfigured && user) {
-      localStorage.setItem('trustcoach_sessions', JSON.stringify(sessions));
+      sessionStorage.setItem('trustcoach_sessions', JSON.stringify(sessions));
     }
   }, [sessions, user]);
 
   useEffect(() => {
     if (!isFirebaseConfigured && user) {
-      localStorage.setItem('trustcoach_goals', JSON.stringify(goals));
+      sessionStorage.setItem('trustcoach_goals', JSON.stringify(goals));
     }
   }, [goals, user]);
 
@@ -205,7 +205,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (isFirebaseConfigured) {
       await signOut(auth!);
     } else {
-      localStorage.removeItem('trustcoach_mock_user');
+      sessionStorage.removeItem('trustcoach_mock_user');
       setUser(null);
     }
     setCurrentView('discovery');

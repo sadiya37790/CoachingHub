@@ -23,9 +23,9 @@ export const AuthScreen: React.FC = () => {
     setError('');
     
     // Clear previous demo session data to provide a 100% clean sandbox playground for the new guest
-    localStorage.removeItem('trustcoach_coaches');
-    localStorage.removeItem('trustcoach_sessions');
-    localStorage.removeItem('trustcoach_goals');
+    sessionStorage.removeItem('trustcoach_coaches');
+    sessionStorage.removeItem('trustcoach_sessions');
+    sessionStorage.removeItem('trustcoach_goals');
     
     // Simulate slight loading for premium UX feedback
     setTimeout(() => {
@@ -38,7 +38,7 @@ export const AuthScreen: React.FC = () => {
       };
       
       // Save mock session
-      localStorage.setItem('trustcoach_mock_user', JSON.stringify(mockUser));
+      sessionStorage.setItem('trustcoach_mock_user', JSON.stringify(mockUser));
       
       // Trigger AppState login update
       if ((appState as any).logInMockUser) {
@@ -63,7 +63,7 @@ export const AuthScreen: React.FC = () => {
           role: selectedRole
         };
         // Save mock session
-        localStorage.setItem('trustcoach_mock_user', JSON.stringify(mockUser));
+        sessionStorage.setItem('trustcoach_mock_user', JSON.stringify(mockUser));
         
         // Trigger AppState login update
         // We'll expose logInMockUser in AppState context
