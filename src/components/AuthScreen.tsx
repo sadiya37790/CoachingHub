@@ -22,6 +22,11 @@ export const AuthScreen: React.FC = () => {
     setLoading(true);
     setError('');
     
+    // Clear previous demo session data to provide a 100% clean sandbox playground for the new guest
+    localStorage.removeItem('trustcoach_coaches');
+    localStorage.removeItem('trustcoach_sessions');
+    localStorage.removeItem('trustcoach_goals');
+    
     // Simulate slight loading for premium UX feedback
     setTimeout(() => {
       setLoading(false);
