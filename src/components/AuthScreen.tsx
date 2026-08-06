@@ -150,7 +150,7 @@ export const AuthScreen: React.FC = () => {
           className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg flex items-center justify-center space-x-2 transition-all duration-300 hover:shadow-indigo-500/20 cursor-pointer mb-2"
         >
           <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
-          <span>Continue as Guest</span>
+          <span>Sign in as Guest</span>
         </button>
 
         {/* Separator Divider */}
