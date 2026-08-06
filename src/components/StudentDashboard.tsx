@@ -76,11 +76,11 @@ export const StudentDashboard: React.FC = () => {
               <Clock className="w-5 h-5 text-indigo-400" />
               <span>Coaching Sessions</span>
             </h2>
-            <span className="text-xxs text-slate-500">Escrow funds lock upon booking.</span>
+            <span className="text-[10px] text-slate-500">Escrow funds lock upon booking.</span>
           </div>
 
           {sessions.length === 0 ? (
-            <div className="text-center py-12 bg-slate-900/60 border border-slate-850 rounded-2xl">
+            <div className="text-center py-12 bg-slate-900/60 border border-slate-800 rounded-2xl">
               <Clock className="w-10 h-10 text-slate-700 mx-auto mb-3" />
               <p className="text-slate-500 text-xs">No bookings found. Head to discovery to hire a coach.</p>
             </div>
@@ -107,7 +107,7 @@ export const StudentDashboard: React.FC = () => {
                         </div>
                         <div>
                           <h3 className="font-bold text-white text-sm">{session.coachName}</h3>
-                          <span className="text-xxs text-slate-500">{session.date} • {session.timeSlot}</span>
+                          <span className="text-[10px] text-slate-500">{session.date} • {session.timeSlot}</span>
                         </div>
                       </div>
 
@@ -115,17 +115,17 @@ export const StudentDashboard: React.FC = () => {
                       <div className="flex flex-col items-end space-y-1">
                         <span className="text-xs font-bold text-white">₹{session.price}</span>
                         {isUpcoming && (
-                          <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-550/20 text-xxxxs font-bold uppercase px-2 py-0.5 rounded">
+                          <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/20 text-[9px] font-bold uppercase px-2 py-0.5 rounded">
                             Upcoming (Held in Escrow)
                           </span>
                         )}
                         {isCompleted && (
-                          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-550/20 text-xxxxs font-bold uppercase px-2 py-0.5 rounded">
+                          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-550/20 text-[9px] font-bold uppercase px-2 py-0.5 rounded">
                             Completed & Released
                           </span>
                         )}
                         {isDisputed && (
-                          <span className="bg-rose-500/20 text-rose-300 border border-rose-550/20 text-xxxxs font-bold uppercase px-2 py-0.5 rounded">
+                          <span className="bg-rose-500/20 text-rose-300 border border-rose-550/20 text-[9px] font-bold uppercase px-2 py-0.5 rounded">
                             Disputed (Funds Locked)
                           </span>
                         )}
@@ -133,9 +133,9 @@ export const StudentDashboard: React.FC = () => {
                     </div>
 
                     {/* Escrow Status Banner on Card */}
-                    <div className={`p-3 rounded-xl border text-xxs flex justify-between items-center ${
+                    <div className={`p-3 rounded-xl border text-[10px] flex justify-between items-center ${
                       session.escrowStatus === 'held'
-                        ? 'bg-slate-950/80 border-slate-850 text-slate-400'
+                        ? 'bg-slate-950/80 border-slate-800 text-slate-400'
                         : session.escrowStatus === 'released'
                         ? 'bg-emerald-950/20 border-emerald-500/20 text-emerald-400'
                         : 'bg-rose-950/20 border-rose-550/20 text-rose-450'
@@ -146,7 +146,7 @@ export const StudentDashboard: React.FC = () => {
                           <span className="font-semibold text-slate-200">
                             Escrow: {session.escrowStatus === 'held' ? 'Funds Securely Locked' : 'Funds Disbursed'}
                           </span>
-                          <p className="text-xxxxs text-slate-500 mt-0.5">
+                          <p className="text-[9px] text-slate-500 mt-0.5">
                             {session.escrowStatus === 'held' 
                               ? 'Protected by TrustCoach contract. Escrow releases only when verified.' 
                               : `Paid to ${session.coachName}. Thank you for verifying.`}
@@ -195,9 +195,9 @@ export const StudentDashboard: React.FC = () => {
 
                     {/* Review Submission Area */}
                     {activeReviewSessionId === session.id && (
-                      <form onSubmit={(e) => handleReviewSubmit(e, session.id)} className="bg-slate-950 p-4 border border-slate-850 rounded-xl space-y-3 pt-3">
+                      <form onSubmit={(e) => handleReviewSubmit(e, session.id)} className="bg-slate-950 p-4 border border-slate-800 rounded-xl space-y-3 pt-3">
                         <div className="flex items-center justify-between">
-                          <label className="text-xxs font-bold text-slate-400 uppercase tracking-wide">Rate your session</label>
+                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Rate your session</label>
                           <div className="flex space-x-1">
                             {[1, 2, 3, 4, 5].map(num => (
                               <button
@@ -213,7 +213,7 @@ export const StudentDashboard: React.FC = () => {
                         </div>
                         
                         <div>
-                          <label className="block text-xxxxs font-bold text-slate-500 uppercase tracking-wider mb-1">Feedback Comment</label>
+                          <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Feedback Comment</label>
                           <textarea
                             required
                             rows={2}
@@ -228,13 +228,13 @@ export const StudentDashboard: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setActiveReviewSessionId(null)}
-                            className="px-3 py-1.5 text-xxs text-slate-400 hover:text-slate-200"
+                            className="px-3 py-1.5 text-[10px] text-slate-400 hover:text-slate-200"
                           >
                             Cancel
                           </button>
                           <button
                             type="submit"
-                            className="px-3.5 py-1.5 bg-indigo-650 hover:bg-indigo-600 text-white font-semibold rounded text-xxs transition-colors"
+                            className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-600 text-white font-semibold rounded text-[10px] transition-colors"
                           >
                             Submit Review
                           </button>
@@ -243,7 +243,7 @@ export const StudentDashboard: React.FC = () => {
                     )}
 
                     {isCompleted && session.ratingLeft && (
-                      <div className="text-xxs text-slate-500 italic bg-slate-950/20 p-2.5 rounded-lg border border-slate-850/30 flex items-center space-x-1.5">
+                      <div className="text-[10px] text-slate-500 italic bg-slate-950/20 p-2.5 rounded-lg border border-slate-800/30 flex items-center space-x-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                         <span>Verified review submitted. Thank you!</span>
                       </div>
@@ -265,7 +265,7 @@ export const StudentDashboard: React.FC = () => {
               </h2>
               <button 
                 onClick={() => setShowAddGoalModal(true)}
-                className="p-1 bg-slate-950 border border-slate-850 hover:border-slate-700 rounded text-indigo-400 hover:text-indigo-300 transition-colors"
+                className="p-1 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded text-indigo-400 hover:text-indigo-300 transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
               </button>
@@ -277,7 +277,7 @@ export const StudentDashboard: React.FC = () => {
                 const percent = Math.min(100, Math.round((goal.currentValue / goal.targetValue) * 100));
                 
                 return (
-                  <div key={goal.id} className="space-y-2 bg-slate-950/40 border border-slate-850/60 p-3.5 rounded-xl">
+                  <div key={goal.id} className="space-y-2 bg-slate-950/40 border border-slate-800/60 p-3.5 rounded-xl">
                     <div className="flex justify-between text-xs font-semibold">
                       <span className="text-slate-300 line-clamp-1">{goal.title}</span>
                       <span className="text-indigo-400 shrink-0">{goal.currentValue}/{goal.targetValue} {goal.unit}</span>
@@ -289,7 +289,7 @@ export const StudentDashboard: React.FC = () => {
                     </div>
 
                     {/* Increment Decrement Controls */}
-                    <div className="flex items-center justify-between pt-1 text-xxs text-slate-500">
+                    <div className="flex items-center justify-between pt-1 text-[10px] text-slate-500">
                       <span>{percent}% Completed</span>
                       <div className="flex items-center space-x-2">
                         <button 
@@ -323,35 +323,35 @@ export const StudentDashboard: React.FC = () => {
             
             <form onSubmit={handleCreateGoal} className="space-y-3.5">
               <div>
-                <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wide mb-1">Goal Name</label>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Goal Name</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Solve Leetcode trees"
                   value={newGoalTitle}
                   onChange={(e) => setNewGoalTitle(e.target.value)}
-                  className="w-full p-2.5 bg-slate-950 border border-slate-850 rounded-xl text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wide mb-1">Target Count</label>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Target Count</label>
                   <input
                     type="number"
                     min="1"
                     value={newGoalTarget}
                     onChange={(e) => setNewGoalTarget(Number(e.target.value))}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-850 rounded-xl text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wide mb-1">Unit</label>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Unit</label>
                   <input
                     type="text"
                     value={newGoalUnit}
                     onChange={(e) => setNewGoalUnit(e.target.value)}
-                    className="w-full p-2.5 bg-slate-950 border border-slate-850 rounded-xl text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
                   />
                 </div>
               </div>
@@ -366,7 +366,7 @@ export const StudentDashboard: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-indigo-650 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow transition-colors"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow transition-colors"
                 >
                   Add Goal
                 </button>

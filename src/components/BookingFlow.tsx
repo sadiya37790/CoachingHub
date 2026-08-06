@@ -20,7 +20,7 @@ export const BookingFlow: React.FC = () => {
     return (
       <div className="text-center py-20">
         <p className="text-slate-400">Booking session expired. Please return to discovery.</p>
-        <button onClick={() => setView('discovery')} className="mt-4 px-4 py-2 bg-indigo-650 rounded-lg text-white">
+        <button onClick={() => setView('discovery')} className="mt-4 px-4 py-2 bg-indigo-600 rounded-lg text-white">
           Back to Discovery
         </button>
       </div>
@@ -73,7 +73,7 @@ export const BookingFlow: React.FC = () => {
           <p className="text-xs text-slate-400 leading-relaxed">
             Your payment of <span className="text-white font-bold">₹{selectedCoach.pricePerSession}</span> is now locked safely in the TrustCoach escrow smart-contract. 
           </p>
-          <div className="p-3 bg-slate-950 rounded-lg text-slate-500 text-xxs leading-normal text-left">
+          <div className="p-3 bg-slate-950 rounded-lg text-slate-500 text-[10px] leading-normal text-left">
             {isLowTrust ? (
               <span className="text-amber-400 font-semibold">
                 ⚠️ Locked Escrow: Funds will not be released to {selectedCoach.name} until you attend the session and click 'Confirm Completion' on your dashboard.
@@ -84,7 +84,7 @@ export const BookingFlow: React.FC = () => {
               </span>
             )}
           </div>
-          <p className="text-xxs text-slate-500">Redirecting you to your dashboard...</p>
+          <p className="text-[10px] text-slate-500">Redirecting you to your dashboard...</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
@@ -95,32 +95,32 @@ export const BookingFlow: React.FC = () => {
             {/* Booking Summary Card */}
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
               <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Booking with</h2>
-              <div className="flex items-center space-x-3.5 bg-slate-950/60 p-3 rounded-xl border border-slate-850">
+              <div className="flex items-center space-x-3.5 bg-slate-950/60 p-3 rounded-xl border border-slate-800">
                 <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${getAvatarGradient(selectedCoach.avatar)} flex items-center justify-center font-bold text-white text-sm`}>
                   {selectedCoach.avatar}
                 </div>
                 <div>
                   <h3 className="font-bold text-white text-sm">{selectedCoach.name}</h3>
-                  <span className="text-xxs text-slate-500">{selectedCoach.specialty.join(', ')}</span>
+                  <span className="text-[10px] text-slate-500">{selectedCoach.specialty.join(', ')}</span>
                 </div>
-                <div className={`ml-auto flex items-center space-x-1.5 px-2 py-0.5 rounded-full border text-xxs font-bold ${label.badgeClass}`}>
+                <div className={`ml-auto flex items-center space-x-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold ${label.badgeClass}`}>
                   <span>{selectedCoach.trustScore}</span>
                 </div>
               </div>
 
               {/* Slot Details */}
               <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
-                <div className="bg-slate-955 border border-slate-850 p-2.5 rounded-lg flex items-center space-x-2">
+                <div className="bg-slate-955 border border-slate-800 p-2.5 rounded-lg flex items-center space-x-2">
                   <Calendar className="w-4 h-4 text-indigo-400 shrink-0" />
                   <div>
-                    <div className="text-slate-500 text-xxs font-medium">DATE</div>
+                    <div className="text-slate-500 text-[10px] font-medium">DATE</div>
                     <span className="text-slate-300 font-semibold">{selectedSlot.date}</span>
                   </div>
                 </div>
-                <div className="bg-slate-955 border border-slate-850 p-2.5 rounded-lg flex items-center space-x-2">
+                <div className="bg-slate-955 border border-slate-800 p-2.5 rounded-lg flex items-center space-x-2">
                   <Clock className="w-4 h-4 text-indigo-400 shrink-0" />
                   <div>
-                    <div className="text-slate-500 text-xxs font-medium">TIME SLOT</div>
+                    <div className="text-slate-500 text-[10px] font-medium">TIME SLOT</div>
                     <span className="text-slate-300 font-semibold">{selectedSlot.time}</span>
                   </div>
                 </div>
@@ -138,21 +138,21 @@ export const BookingFlow: React.FC = () => {
               <div className="grid grid-cols-3 gap-2 text-center text-slate-400 relative pt-2">
                 
                 {/* Step 1 */}
-                <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850 space-y-1 relative">
-                  <div className="text-xxs font-bold text-indigo-400">1. Deposit</div>
-                  <p className="text-xxxxs text-slate-500 leading-tight">Your funds are securely locked in escrow.</p>
+                <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1 relative">
+                  <div className="text-[10px] font-bold text-indigo-400">1. Deposit</div>
+                  <p className="text-[9px] text-slate-500 leading-tight">Your funds are securely locked in escrow.</p>
                 </div>
                 
                 {/* Step 2 */}
-                <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850 space-y-1">
-                  <div className="text-xxs font-bold text-indigo-400">2. Coaching</div>
-                  <p className="text-xxxxs text-slate-500 leading-tight">Coach holds the session live.</p>
+                <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1">
+                  <div className="text-[10px] font-bold text-indigo-400">2. Coaching</div>
+                  <p className="text-[9px] text-slate-500 leading-tight">Coach holds the session live.</p>
                 </div>
 
                 {/* Step 3 */}
-                <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850 space-y-1">
-                  <div className="text-xxs font-bold text-indigo-400">3. Release</div>
-                  <p className="text-xxxxs text-slate-500 leading-tight">Funds unlock once you verify outcome.</p>
+                <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1">
+                  <div className="text-[10px] font-bold text-indigo-400">3. Release</div>
+                  <p className="text-[9px] text-slate-500 leading-tight">Funds unlock once you verify outcome.</p>
                 </div>
 
               </div>
@@ -163,7 +163,7 @@ export const BookingFlow: React.FC = () => {
                   <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
                   <div className="space-y-1 text-xs">
                     <div className="font-bold text-amber-300">Payment Held Until Session Confirmed (High Protection)</div>
-                    <p className="text-slate-400 leading-normal text-xxs">
+                    <p className="text-slate-400 leading-normal text-[10px]">
                       Because {selectedCoach.name} has a Trust Score below 70 ({selectedCoach.trustScore}/100), we hold your payment in strict escrow. The coach will NOT get paid until you mark the session as complete in your dashboard. If the coach is a no-show, you can raise an instant full refund dispute.
                     </p>
                   </div>
@@ -173,7 +173,7 @@ export const BookingFlow: React.FC = () => {
                   <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                   <div className="space-y-1 text-xs">
                     <div className="font-bold text-emerald-300">Fast Release — Trusted Coach (Standard Mode)</div>
-                    <p className="text-slate-400 leading-normal text-xxs">
+                    <p className="text-slate-400 leading-normal text-[10px]">
                       {selectedCoach.name} is a highly-rated, verified coach with a Trust Score of {selectedCoach.trustScore}/100. For verified coaches, payment is fast-tracked and will be automatically released to them 24 hours after the session is scheduled, unless you report a dispute or cancellation before then.
                     </p>
                   </div>
@@ -207,43 +207,43 @@ export const BookingFlow: React.FC = () => {
               <form onSubmit={handlePaymentSubmit} className="space-y-4 pt-3">
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Cardholder Name</label>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Cardholder Name</label>
                     <input 
                       type="text" 
                       required 
                       defaultValue="Rahul Dev"
-                      className="w-full p-2.5 bg-slate-950 border border-slate-850 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
+                      className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
                     />
                   </div>
                   <div>
-                    <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mock Card Details</label>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mock Card Details</label>
                     <div className="relative">
                       <CreditCard className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                       <input 
                         type="text" 
                         required 
                         placeholder="4242 4242 4242 4242"
-                        className="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-850 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
+                        className="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Expiry</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Expiry</label>
                       <input 
                         type="text" 
                         required 
                         placeholder="MM/YY"
-                        className="w-full p-2.5 bg-slate-950 border border-slate-850 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
+                        className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
                       />
                     </div>
                     <div>
-                      <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wider mb-1.5">CVC</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">CVC</label>
                       <input 
                         type="password" 
                         required 
                         placeholder="•••"
-                        className="w-full p-2.5 bg-slate-950 border border-slate-850 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
+                        className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
                       />
                     </div>
                   </div>
@@ -255,7 +255,7 @@ export const BookingFlow: React.FC = () => {
                   className={`w-full py-3 rounded-xl font-bold text-xs text-center text-white flex items-center justify-center space-x-2 transition-all-300 shadow-md ${
                     processing 
                       ? 'bg-slate-800 text-slate-500 cursor-not-allowed' 
-                      : 'bg-indigo-650 hover:bg-indigo-600 cursor-pointer hover:shadow-indigo-500/20'
+                      : 'bg-indigo-600 hover:bg-indigo-600 cursor-pointer hover:shadow-indigo-500/20'
                   }`}
                 >
                   <Lock className="w-3.5 h-3.5" />
@@ -263,7 +263,7 @@ export const BookingFlow: React.FC = () => {
                 </button>
               </form>
               
-              <div className="flex items-center justify-center space-x-1.5 text-slate-500 text-xxs">
+              <div className="flex items-center justify-center space-x-1.5 text-slate-500 text-[10px]">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>SSL Encrypted & PCI Compliant Sandbox</span>
               </div>

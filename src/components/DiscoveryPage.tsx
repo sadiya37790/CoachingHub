@@ -131,7 +131,7 @@ export const DiscoveryPage: React.FC = () => {
                     type="checkbox"
                     checked={selectedSpecialties.includes(spec)}
                     onChange={() => handleSpecialtyToggle(spec)}
-                    className="rounded border-slate-700 bg-slate-850 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900 focus:ring-2 w-4 h-4"
+                    className="rounded border-slate-700 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900 focus:ring-2 w-4 h-4"
                   />
                   <span>{spec}</span>
                 </label>
@@ -158,7 +158,7 @@ export const DiscoveryPage: React.FC = () => {
                     name="trust-filter"
                     checked={trustFilter === item.val}
                     onChange={() => setTrustFilter(item.val as any)}
-                    className="border-slate-700 bg-slate-850 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900 focus:ring-2 w-4 h-4"
+                    className="border-slate-700 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-slate-900 focus:ring-2 w-4 h-4"
                   />
                   <span>{item.label}</span>
                 </label>
@@ -181,7 +181,7 @@ export const DiscoveryPage: React.FC = () => {
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 focus:outline-none"
             />
-            <div className="flex justify-between text-xxs text-slate-500 mt-1">
+            <div className="flex justify-between text-[10px] text-slate-500 mt-1">
               <span>₹500</span>
               <span>₹2000</span>
             </div>
@@ -278,7 +278,7 @@ export const DiscoveryPage: React.FC = () => {
                             <ShieldCheck className="w-3.5 h-3.5" />
                             <span>{coach.trustScore} / 100</span>
                           </div>
-                          <span className="text-xxs text-slate-500 mt-1 font-medium">{label.text}</span>
+                          <span className="text-[10px] text-slate-500 mt-1 font-medium">{label.text}</span>
                         </div>
                       </div>
 
@@ -292,7 +292,7 @@ export const DiscoveryPage: React.FC = () => {
                         {coach.specialty.map(spec => (
                           <span 
                             key={spec} 
-                            className="px-2 py-0.5 bg-slate-950 border border-slate-800 text-slate-400 text-xxs font-medium rounded-md hover:border-slate-700 hover:text-slate-300 transition-colors"
+                            className="px-2 py-0.5 bg-slate-950 border border-slate-800 text-slate-400 text-[10px] font-medium rounded-md hover:border-slate-700 hover:text-slate-300 transition-colors"
                           >
                             {spec}
                           </span>
@@ -303,7 +303,7 @@ export const DiscoveryPage: React.FC = () => {
                     {/* Footer Row: Price & Action */}
                     <div className="flex items-center justify-between border-t border-slate-800 pt-4 mt-auto">
                       <div>
-                        <span className="text-xxs text-slate-500 uppercase font-semibold tracking-wider">Per Session</span>
+                        <span className="text-[10px] text-slate-500 uppercase font-semibold tracking-wider">Per Session</span>
                         <div className="text-lg font-extrabold text-white">
                           ₹{coach.pricePerSession}
                         </div>
@@ -311,7 +311,7 @@ export const DiscoveryPage: React.FC = () => {
 
                       <button
                         onClick={() => setView('profile', coach)}
-                        className="px-4 py-2 bg-indigo-650 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg shadow-lg hover:shadow-indigo-500/20 transition-all-300 flex items-center space-x-1"
+                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg shadow-lg hover:shadow-indigo-500/20 transition-all-300 flex items-center space-x-1"
                       >
                         <span>View Profile</span>
                       </button>

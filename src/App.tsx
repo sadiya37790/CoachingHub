@@ -39,12 +39,12 @@ function App() {
             onClick={() => user && setView('discovery')}
             className="flex items-center space-x-2.5 cursor-pointer group"
           >
-            <div className="w-9 h-9 rounded-xl bg-indigo-650 flex items-center justify-center text-white shadow-lg shadow-indigo-550/10 group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-550/10 group-hover:scale-105 transition-transform">
               <Shield className="w-5 h-5 fill-indigo-200/10" />
             </div>
             <div>
               <span className="text-base font-extrabold text-white tracking-tight">TrustCoach</span>
-              <span className="text-xxs text-indigo-400 font-semibold block -mt-0.5">Verified Preparation</span>
+              <span className="text-[10px] text-indigo-400 font-semibold block -mt-0.5">Verified Preparation</span>
             </div>
           </div>
 
@@ -88,12 +88,12 @@ function App() {
               <div className="flex items-center space-x-4">
                 
                 {/* Mode Switcher pill */}
-                <div className="flex bg-slate-900 p-0.5 rounded-lg border border-slate-850 text-xxs font-bold">
+                <div className="flex bg-slate-900 p-0.5 rounded-lg border border-slate-800 text-[10px] font-bold">
                   <button
                     onClick={() => setRole('student')}
                     className={`px-2.5 py-1 rounded-md transition-all-300 flex items-center space-x-1 ${
                       currentUserRole === 'student'
-                        ? 'bg-indigo-650 text-white shadow-sm'
+                        ? 'bg-indigo-600 text-white shadow-sm'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -104,7 +104,7 @@ function App() {
                     onClick={() => setRole('coach')}
                     className={`px-2.5 py-1 rounded-md transition-all-300 flex items-center space-x-1 ${
                       currentUserRole === 'coach'
-                        ? 'bg-indigo-650 text-white shadow-sm'
+                        ? 'bg-indigo-600 text-white shadow-sm'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -114,15 +114,15 @@ function App() {
                 </div>
 
                 {/* Profile Badge & Sign out */}
-                <div className="flex items-center space-x-3 border-l border-slate-850 pl-4">
+                <div className="flex items-center space-x-3 border-l border-slate-800 pl-4">
                   <div className="hidden lg:flex flex-col text-right">
                     <span className="text-xs font-bold text-white leading-none">{user.name}</span>
-                    <span className="text-xxxxs text-slate-500 font-semibold uppercase tracking-wider mt-0.5">{user.role} mode</span>
+                    <span className="text-[9px] text-slate-500 font-semibold uppercase tracking-wider mt-0.5">{user.role} mode</span>
                   </div>
                   
                   <button 
                     onClick={logOut}
-                    className="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-850 text-slate-400 hover:text-white rounded-xl transition-all-300"
+                    className="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white rounded-xl transition-all-300"
                     title="Sign Out"
                   >
                     <LogOut className="w-4 h-4" />
@@ -149,7 +149,7 @@ function App() {
               <Shield className="w-4 h-4 text-indigo-400" />
               <span>TrustCoach Protocol</span>
             </div>
-            <p className="text-xxs text-slate-550 leading-relaxed max-w-md">
+            <p className="text-[10px] text-slate-500 leading-relaxed max-w-md">
               A decentralized escrow and audit mechanism. TrustScores are audited on-chain (mocked) to secure high-stakes technical mentorship contracts.
             </p>
           </div>

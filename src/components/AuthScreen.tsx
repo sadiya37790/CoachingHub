@@ -3,7 +3,7 @@ import { useAppState } from '../AppState';
 import { isFirebaseConfigured, auth, db } from '../firebaseConfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { Shield, Lock, Mail, User as UserIcon, ShieldCheck, GraduationCap, Briefcase } from 'lucide-react';
+import { Shield, Lock, Mail, User as UserIcon, ShieldCheck, GraduationCap, Briefcase, Zap } from 'lucide-react';
 
 export const AuthScreen: React.FC = () => {
   
@@ -17,8 +17,31 @@ export const AuthScreen: React.FC = () => {
 
   // Read auth methods from context to set user state in mock fallback
   const appState = useAppState();
-  // We'll define a setMockUser function on AppState to update authenticated user.
-  // Wait, let's look at what we need to support in AppState. We will add a login/signup mock callback.
+
+  const handleGuestLogin = () => {
+    setLoading(true);
+    setError('');
+    
+    // Simulate slight loading for premium UX feedback
+    setTimeout(() => {
+      setLoading(false);
+      const mockUser = {
+        uid: `guest-${Date.now()}`,
+        email: 'guest@demo.com',
+        name: 'Guest',
+        role: 'student' as const
+      };
+      
+      // Save mock session
+      localStorage.setItem('trustcoach_mock_user', JSON.stringify(mockUser));
+      
+      // Trigger AppState login update
+      if ((appState as any).logInMockUser) {
+        (appState as any).logInMockUser(mockUser);
+      }
+    }, 500);
+  };
+
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -91,7 +114,7 @@ export const AuthScreen: React.FC = () => {
 
         {/* Brand header */}
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-650 flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-550/15 mb-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-550/15 mb-3.5">
             <Shield className="w-6 h-6 fill-indigo-200/10" />
           </div>
           <h2 className="text-xl font-extrabold text-white tracking-tight">
@@ -104,7 +127,7 @@ export const AuthScreen: React.FC = () => {
 
         {/* Fallback warning banner if Firebase is offline */}
         {!isFirebaseConfigured && (
-          <div className="mb-6 p-3 bg-amber-500/10 border border-amber-500/25 rounded-xl flex items-start space-x-2 text-amber-400 text-xxs leading-normal">
+          <div className="mb-6 p-3 bg-amber-500/10 border border-amber-500/25 rounded-xl flex items-start space-x-2 text-amber-400 text-[10px] leading-normal">
             <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
             <div>
               <span className="font-bold">Offline Demo Mode Active</span>
@@ -119,12 +142,30 @@ export const AuthScreen: React.FC = () => {
           </div>
         )}
 
+        {/* Continue as Guest Button (Primary) */}
+        <button
+          onClick={handleGuestLogin}
+          type="button"
+          disabled={loading}
+          className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg flex items-center justify-center space-x-2 transition-all duration-300 hover:shadow-indigo-500/20 cursor-pointer mb-2"
+        >
+          <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+          <span>Continue as Guest</span>
+        </button>
+
+        {/* Separator Divider */}
+        <div className="flex items-center my-5">
+          <div className="flex-grow border-t border-slate-800"></div>
+          <span className="mx-4 text-[9px] text-slate-500 font-bold uppercase tracking-wider">or sign in with credentials</span>
+          <div className="flex-grow border-t border-slate-800"></div>
+        </div>
+
         <form onSubmit={handleAuthSubmit} className="space-y-4">
           
           {/* Role selector on registration */}
           {!isLogin && (
             <div className="space-y-2">
-              <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wider">Register As</label>
+              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Register As</label>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
@@ -132,7 +173,7 @@ export const AuthScreen: React.FC = () => {
                   className={`py-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center space-x-2 transition-all-300 ${
                     selectedRole === 'student'
                       ? 'bg-indigo-600/15 border-indigo-500 text-white'
-                      : 'bg-slate-950/40 border-slate-850 text-slate-450 hover:border-slate-800'
+                      : 'bg-slate-950/40 border-slate-800 text-slate-450 hover:border-slate-800'
                   }`}
                 >
                   <GraduationCap className="w-4 h-4" />
@@ -144,7 +185,7 @@ export const AuthScreen: React.FC = () => {
                   className={`py-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center space-x-2 transition-all-300 ${
                     selectedRole === 'coach'
                       ? 'bg-indigo-600/15 border-indigo-500 text-white'
-                      : 'bg-slate-950/40 border-slate-850 text-slate-450 hover:border-slate-800'
+                      : 'bg-slate-950/40 border-slate-800 text-slate-450 hover:border-slate-800'
                   }`}
                 >
                   <Briefcase className="w-4 h-4" />
@@ -157,7 +198,7 @@ export const AuthScreen: React.FC = () => {
           {/* Name Field (Signup only) */}
           {!isLogin && (
             <div>
-              <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Full Name</label>
+              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Full Name</label>
               <div className="relative">
                 <UserIcon className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
                 <input
@@ -166,7 +207,7 @@ export const AuthScreen: React.FC = () => {
                   placeholder="Rahul Dev"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-850 rounded-xl text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                 />
               </div>
             </div>
@@ -174,7 +215,7 @@ export const AuthScreen: React.FC = () => {
 
           {/* Email Field */}
           <div>
-            <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Email Address</label>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Email Address</label>
             <div className="relative">
               <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
               <input
@@ -183,14 +224,14 @@ export const AuthScreen: React.FC = () => {
                 placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-850 rounded-xl text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               />
             </div>
           </div>
 
           {/* Password Field */}
           <div>
-            <label className="block text-xxs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Password</label>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Password</label>
             <div className="relative">
               <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
               <input
@@ -199,7 +240,7 @@ export const AuthScreen: React.FC = () => {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-850 rounded-xl text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               />
             </div>
           </div>
@@ -211,7 +252,7 @@ export const AuthScreen: React.FC = () => {
             className={`w-full py-3 rounded-xl text-white font-bold text-xs shadow-lg flex items-center justify-center space-x-1.5 transition-all-300 ${
               loading 
                 ? 'bg-slate-800 text-slate-500 cursor-not-allowed' 
-                : 'bg-indigo-650 hover:bg-indigo-600 hover:shadow-indigo-550/15 cursor-pointer'
+                : 'bg-indigo-600 hover:bg-indigo-600 hover:shadow-indigo-550/15 cursor-pointer'
             }`}
           >
             {loading ? (

@@ -10,7 +10,7 @@ export const CoachProfilePage: React.FC = () => {
     return (
       <div className="text-center py-20">
         <p className="text-slate-400">No coach selected. Please go back to discovery.</p>
-        <button onClick={() => setView('discovery')} className="mt-4 px-4 py-2 bg-indigo-650 rounded-lg text-white">
+        <button onClick={() => setView('discovery')} className="mt-4 px-4 py-2 bg-indigo-600 rounded-lg text-white">
           Back to Discovery
         </button>
       </div>
@@ -87,7 +87,7 @@ export const CoachProfilePage: React.FC = () => {
                   <h1 className="text-2xl font-bold text-white md:text-3xl">{selectedCoach.name}</h1>
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {selectedCoach.specialty.map(s => (
-                      <span key={s} className="px-2.5 py-0.5 bg-slate-950 border border-slate-850 text-indigo-400 text-xs font-semibold rounded-md">
+                      <span key={s} className="px-2.5 py-0.5 bg-slate-950 border border-slate-800 text-indigo-400 text-xs font-semibold rounded-md">
                         {s}
                       </span>
                     ))}
@@ -95,7 +95,7 @@ export const CoachProfilePage: React.FC = () => {
                 </div>
 
                 {/* Score */}
-                <div className={`bg-slate-950 border border-slate-850 p-3 rounded-xl flex items-center space-x-3 shrink-0`}>
+                <div className={`bg-slate-950 border border-slate-800 p-3 rounded-xl flex items-center space-x-3 shrink-0`}>
                   <div className={`w-11 h-11 rounded-lg flex items-center justify-center font-bold ${label.badgeClass} border text-sm`}>
                     {selectedCoach.trustScore}
                   </div>
@@ -104,7 +104,7 @@ export const CoachProfilePage: React.FC = () => {
                       <ShieldCheck className="w-3.5 h-3.5 text-indigo-400 mr-1" />
                       <span>Trust Score</span>
                     </div>
-                    <span className="text-xxs text-slate-500 font-medium">{label.text}</span>
+                    <span className="text-[10px] text-slate-500 font-medium">{label.text}</span>
                   </div>
                 </div>
               </div>
@@ -130,7 +130,7 @@ export const CoachProfilePage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               
               {/* ID Verification */}
-              <div className="bg-slate-950/40 border border-slate-850/60 p-4 rounded-xl flex items-start space-x-3">
+              <div className="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl flex items-start space-x-3">
                 {idVerified ? (
                   <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                 ) : (
@@ -144,12 +144,12 @@ export const CoachProfilePage: React.FC = () => {
                   <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
                     <div className="bg-emerald-500 h-full" style={{ width: `${(idScore/20)*100}%` }}></div>
                   </div>
-                  <span className="text-xxs text-slate-500 mt-1.5 block">Government ID matched with profile name.</span>
+                  <span className="text-[10px] text-slate-500 mt-1.5 block">Government ID matched with profile name.</span>
                 </div>
               </div>
 
               {/* Certificate Upload */}
-              <div className="bg-slate-950/40 border border-slate-850/60 p-4 rounded-xl flex items-start space-x-3">
+              <div className="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl flex items-start space-x-3">
                 {certificatesUploaded ? (
                   <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                 ) : (
@@ -163,12 +163,12 @@ export const CoachProfilePage: React.FC = () => {
                   <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
                     <div className="bg-emerald-500 h-full" style={{ width: `${(certScore/20)*100}%` }}></div>
                   </div>
-                  <span className="text-xxs text-slate-500 mt-1.5 block">Degrees, bootcamps or technical certifications.</span>
+                  <span className="text-[10px] text-slate-500 mt-1.5 block">Degrees, bootcamps or technical certifications.</span>
                 </div>
               </div>
 
               {/* Sessions Completed */}
-              <div className="bg-slate-950/40 border border-slate-850/60 p-4 rounded-xl flex items-start space-x-3">
+              <div className="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl flex items-start space-x-3">
                 {sessionsCompletedCount > 0 ? (
                   <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                 ) : (
@@ -182,12 +182,12 @@ export const CoachProfilePage: React.FC = () => {
                   <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
                     <div className="bg-emerald-500 h-full" style={{ width: `${(sessionScore/30)*100}%` }}></div>
                   </div>
-                  <span className="text-xxs text-slate-500 mt-1.5 block">Scales +3 points per session. Capped at 10 sessions.</span>
+                  <span className="text-[10px] text-slate-500 mt-1.5 block">Scales +3 points per session. Capped at 10 sessions.</span>
                 </div>
               </div>
 
               {/* Placements Outcomes */}
-              <div className="bg-slate-950/40 border border-slate-850/60 p-4 rounded-xl flex items-start space-x-3">
+              <div className="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl flex items-start space-x-3">
                 {verifiedPlacementsCount > 0 ? (
                   <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                 ) : (
@@ -201,7 +201,7 @@ export const CoachProfilePage: React.FC = () => {
                   <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
                     <div className="bg-emerald-500 h-full" style={{ width: `${(outcomeScore/20)*100}%` }}></div>
                   </div>
-                  <span className="text-xxs text-slate-500 mt-1.5 block">Proven student offer letters. +10 points each (max 2).</span>
+                  <span className="text-[10px] text-slate-500 mt-1.5 block">Proven student offer letters. +10 points each (max 2).</span>
                 </div>
               </div>
 
@@ -225,7 +225,7 @@ export const CoachProfilePage: React.FC = () => {
                     {disputeScore}/10 pts
                   </span>
                 </div>
-                <p className="text-xxs text-slate-500 mt-1 leading-relaxed">
+                <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">
                   {noRefundDisputes 
                     ? '100% dispute-free record. No active student refund queries found.'
                     : 'Dispute alert: A student raised a dispute. Score penalized by 10 points.'}
@@ -241,7 +241,7 @@ export const CoachProfilePage: React.FC = () => {
               <span>Coach Introduction Video</span>
             </h2>
             {selectedCoach.videoUrl ? (
-              <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-950 border border-slate-850">
+              <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-950 border border-slate-800">
                 <video 
                   src={selectedCoach.videoUrl} 
                   controls 
@@ -269,7 +269,7 @@ export const CoachProfilePage: React.FC = () => {
             ) : (
               <div className="space-y-4">
                 {selectedCoach.placements.map(p => (
-                  <div key={p.id} className="bg-slate-950/40 border border-slate-850/60 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                  <div key={p.id} className="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div>
                       <div className="text-sm font-semibold text-slate-200">
                         {p.studentName} placed at <span className="text-white font-bold">{p.companyName}</span>
@@ -317,12 +317,12 @@ export const CoachProfilePage: React.FC = () => {
                               />
                             ))}
                           </div>
-                          <span className="text-xxs text-slate-500">{r.date}</span>
+                          <span className="text-[10px] text-slate-500">{r.date}</span>
                         </div>
                       </div>
                       
                       {r.verifiedSession && (
-                        <div className="flex items-center space-x-1 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded text-xxs font-bold text-emerald-400">
+                        <div className="flex items-center space-x-1 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded text-[10px] font-bold text-emerald-400">
                           <CheckCircle2 className="w-3 h-3" />
                           <span>Verified session</span>
                         </div>
@@ -360,7 +360,7 @@ export const CoachProfilePage: React.FC = () => {
                 <ShieldCheck className="w-4 h-4 shrink-0" />
                 <span>{selectedCoach.trustScore >= 70 ? 'Fast Release' : 'High Escrow Held'}</span>
               </div>
-              <p className="text-xxs text-slate-400">
+              <p className="text-[10px] text-slate-400">
                 {selectedCoach.trustScore >= 70 
                   ? 'Highly Trusted Coach. Escrow releases quickly post-session.' 
                   : 'Coach has low Trust. Funds remain locked until you explicitly confirm completion.'}
@@ -421,7 +421,7 @@ export const CoachProfilePage: React.FC = () => {
               disabled={!selectedSlot}
               className={`w-full py-3 rounded-xl text-xs font-bold text-center transition-all-300 shadow-md ${
                 selectedSlot 
-                  ? 'bg-indigo-650 hover:bg-indigo-600 text-white cursor-pointer hover:shadow-indigo-500/20' 
+                  ? 'bg-indigo-600 hover:bg-indigo-600 text-white cursor-pointer hover:shadow-indigo-500/20' 
                   : 'bg-slate-800 text-slate-500 cursor-not-allowed'
               }`}
             >

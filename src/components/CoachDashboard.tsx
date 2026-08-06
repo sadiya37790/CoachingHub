@@ -91,7 +91,7 @@ export const CoachDashboard: React.FC = () => {
             <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-ping" />
             <span className="text-xs font-bold text-slate-350 uppercase tracking-wide">Prototype Testing Suite</span>
           </div>
-          <p className="text-slate-400 text-xxs mt-0.5">Switch coach profiles to inspect how different trust scores adjust dashboard alerts and payment releases.</p>
+          <p className="text-slate-400 text-[10px] mt-0.5">Switch coach profiles to inspect how different trust scores adjust dashboard alerts and payment releases.</p>
         </div>
         <div className="flex items-center space-x-2 shrink-0">
           <label className="text-xs text-slate-400 font-medium">Select Coach Profile:</label>
@@ -123,13 +123,13 @@ export const CoachDashboard: React.FC = () => {
               {/* Outer Score Circle */}
               <div className="w-32 h-32 rounded-full border-4 border-slate-800 flex flex-col items-center justify-center relative">
                 <span className="text-4xl font-extrabold text-white">{currentCoach.trustScore}</span>
-                <span className="text-slate-500 text-xxs mt-0.5">/ 100 max</span>
+                <span className="text-slate-500 text-[10px] mt-0.5">/ 100 max</span>
               </div>
             </div>
 
             <div className="space-y-1">
               <span className={`text-xs font-bold ${label.textClass}`}>{label.text}</span>
-              <p className="text-xxs text-slate-500 leading-normal">
+              <p className="text-[10px] text-slate-500 leading-normal">
                 {currentCoach.trustScore >= 80 ? 'Excellent! Standard fast-release enabled for bookings.' :
                  currentCoach.trustScore >= 50 ? 'Good standing. Complete certificates or sessions to hit 80+.' :
                  'Warning: Restricted escrow. Payments held until students confirm attendance.'}
@@ -152,8 +152,8 @@ export const CoachDashboard: React.FC = () => {
             ) : (
               <div className="space-y-3.5">
                 {tips.map((tip, index) => (
-                  <div key={index} className={`p-3 rounded-xl border text-xxs leading-normal ${
-                    tip.warning ? 'bg-rose-500/10 border-rose-500/20 text-rose-300' : 'bg-slate-950 border-slate-850 text-slate-400'
+                  <div key={index} className={`p-3 rounded-xl border text-[10px] leading-normal ${
+                    tip.warning ? 'bg-rose-500/10 border-rose-500/20 text-rose-300' : 'bg-slate-950 border-slate-800 text-slate-400'
                   }`}>
                     <div className="flex justify-between items-start font-bold mb-1">
                       <span className={tip.warning ? 'text-rose-400' : 'text-slate-350'}>
@@ -166,7 +166,7 @@ export const CoachDashboard: React.FC = () => {
                     <p>{tip.text}</p>
                     
                     {tip.action === 'upload' && (
-                      <div className="mt-2.5 pt-2 border-t border-slate-850">
+                      <div className="mt-2.5 pt-2 border-t border-slate-800">
                         <form onSubmit={handleCertSubmit} className="flex gap-2">
                           <input 
                             type="text"
@@ -174,18 +174,18 @@ export const CoachDashboard: React.FC = () => {
                             placeholder="Cert Name (e.g. AWS Certified)"
                             value={certNameInput}
                             onChange={(e) => setCertNameInput(e.target.value)}
-                            className="flex-grow p-1.5 bg-slate-900 border border-slate-800 rounded text-xxs text-slate-200 placeholder-slate-650 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            className="flex-grow p-1.5 bg-slate-900 border border-slate-800 rounded text-[10px] text-slate-200 placeholder-slate-650 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                           />
                           <button 
                             type="submit"
-                            className="bg-indigo-650 hover:bg-indigo-600 px-3 py-1.5 text-white font-bold rounded text-xxs transition-colors shrink-0 flex items-center space-x-1"
+                            className="bg-indigo-600 hover:bg-indigo-600 px-3 py-1.5 text-white font-bold rounded text-[10px] transition-colors shrink-0 flex items-center space-x-1"
                           >
                             <Upload className="w-3 h-3" />
                             <span>Upload</span>
                           </button>
                         </form>
                         {uploadSuccess && (
-                          <span className="text-xxs text-emerald-400 mt-1 block">Certificate uploaded! Trust Score updated (+20)</span>
+                          <span className="text-[10px] text-emerald-400 mt-1 block">Certificate uploaded! Trust Score updated (+20)</span>
                         )}
                       </div>
                     )}
@@ -208,7 +208,7 @@ export const CoachDashboard: React.FC = () => {
             </h2>
 
             {coachStudents.length === 0 ? (
-              <div className="text-center py-10 bg-slate-950/45 border border-dashed border-slate-850 rounded-xl">
+              <div className="text-center py-10 bg-slate-950/45 border border-dashed border-slate-800 rounded-xl">
                 <Users className="w-8 h-8 text-slate-700 mx-auto mb-2" />
                 <p className="text-slate-500 text-xs">No bookings found for your profile yet.</p>
               </div>
@@ -216,7 +216,7 @@ export const CoachDashboard: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider text-xxs">
+                    <tr className="border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
                       <th className="pb-3 pr-2">Student Name</th>
                       <th className="pb-3 pr-2">Date & Time</th>
                       <th className="pb-3 pr-2">Booking Payment</th>
@@ -229,20 +229,20 @@ export const CoachDashboard: React.FC = () => {
                         <td className="py-3.5 pr-2 font-bold text-white">{stud.name}</td>
                         <td className="py-3.5 pr-2 text-slate-400">
                           <div>{stud.date}</div>
-                          <div className="text-slate-500 text-xxs">{stud.time}</div>
+                          <div className="text-slate-500 text-[10px]">{stud.time}</div>
                         </td>
                         <td className="py-3.5 pr-2 text-slate-300 font-semibold">₹{stud.price}</td>
                         <td className="py-3.5">
                           {stud.escrow === 'held' ? (
-                            <span className="px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded text-xxs font-semibold text-amber-400">
+                            <span className="px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded text-[10px] font-semibold text-amber-400">
                               Locked in Escrow
                             </span>
                           ) : stud.escrow === 'released' ? (
-                            <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-xxs font-semibold text-emerald-400">
+                            <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-[10px] font-semibold text-emerald-400">
                               Released to Bank
                             </span>
                           ) : (
-                            <span className="px-2 py-0.5 bg-rose-500/10 border border-rose-500/20 rounded text-xxs font-semibold text-rose-450">
+                            <span className="px-2 py-0.5 bg-rose-500/10 border border-rose-500/20 rounded text-[10px] font-semibold text-rose-450">
                               Returned/Disputed
                             </span>
                           )}
@@ -263,10 +263,10 @@ export const CoachDashboard: React.FC = () => {
             </h2>
 
             <div className="space-y-3">
-              <div className="bg-slate-950/60 border border-slate-850 p-4 rounded-xl">
+              <div className="bg-slate-950/60 border border-slate-800 p-4 rounded-xl">
                 <div className="text-xs font-semibold text-slate-350 uppercase mb-2">Uploaded Certificates</div>
                 {currentCoach.certificates.length === 0 ? (
-                  <span className="text-xs text-slate-550 italic">No certificates verified yet. Use improve tips panel to upload.</span>
+                  <span className="text-xs text-slate-500 italic">No certificates verified yet. Use improve tips panel to upload.</span>
                 ) : (
                   <ul className="space-y-2">
                     {currentCoach.certificates.map((cert, idx) => (
@@ -279,10 +279,10 @@ export const CoachDashboard: React.FC = () => {
                 )}
               </div>
 
-              <div className="bg-slate-950/60 border border-slate-850 p-4 rounded-xl">
+              <div className="bg-slate-950/60 border border-slate-800 p-4 rounded-xl">
                 <div className="text-xs font-semibold text-slate-350 uppercase mb-2">Audited Placements outcomes ({currentCoach.placements.length})</div>
                 {currentCoach.placements.length === 0 ? (
-                  <span className="text-xs text-slate-550 italic">No offer verification proof links uploaded yet.</span>
+                  <span className="text-xs text-slate-500 italic">No offer verification proof links uploaded yet.</span>
                 ) : (
                   <ul className="space-y-2">
                     {currentCoach.placements.map(pl => (
@@ -291,7 +291,7 @@ export const CoachDashboard: React.FC = () => {
                           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                           <span>{pl.studentName} placed at {pl.companyName}</span>
                         </div>
-                        <a href={pl.proofLink} className="text-xxs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center space-x-0.5">
+                        <a href={pl.proofLink} className="text-[10px] text-indigo-400 hover:text-indigo-300 font-semibold flex items-center space-x-0.5">
                           <span>Proof Link</span>
                           <ArrowUpRight className="w-3.5 h-3.5" />
                         </a>
