@@ -10,7 +10,7 @@ export const INITIAL_COACHES: Coach[] = [
     pricePerSession: 1500,
     avatar: 'AS',
     certificates: ['Google Staff Engineering Certification', 'AWS Certified Solutions Architect - Professional'],
-    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', // mock playable video
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', // mock playable video
     placements: [
       {
         id: 'p-1',
@@ -70,7 +70,7 @@ export const INITIAL_COACHES: Coach[] = [
     pricePerSession: 1800,
     avatar: 'SV',
     certificates: ['Oracle Certified Master Java Enterprise Architect'],
-    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     placements: [
       {
         id: 'p-4',
@@ -123,7 +123,7 @@ export const INITIAL_COACHES: Coach[] = [
     pricePerSession: 800,
     avatar: 'NG',
     certificates: [], // No certs uploaded (0 points)
-    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     placements: [
       {
         id: 'p-6',
