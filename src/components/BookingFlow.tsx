@@ -4,10 +4,11 @@ import { getTrustLabel } from '../trustCalculator';
 import { ShieldCheck, Calendar, Clock, Lock, ShieldAlert, CreditCard } from 'lucide-react';
 
 export const BookingFlow: React.FC = () => {
-  const { selectedCoach, setView, bookSession } = useAppState();
+  const { selectedCoach, setView, bookSession, user } = useAppState();
   const [selectedSlot, setSelectedSlot] = useState<{ date: string; time: string } | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
 
   useEffect(() => {
     const saved = sessionStorage.getItem('trustcoach_temp_slot');
@@ -32,6 +33,15 @@ export const BookingFlow: React.FC = () => {
 
   const handlePaymentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setPaymentError('');
+
+    // Restrict payment in guest mode
+    const isGuest = user?.uid?.startsWith('guest-') || user?.email === 'guest@demo.com';
+    if (isGuest) {
+      setPaymentError('Action Denied: Guest accounts are restricted from depositing escrow. Please log out and sign up for a personal student account to test transaction flows.');
+      return;
+    }
+
     setProcessing(true);
     
     // Simulate transaction
@@ -205,6 +215,11 @@ export const BookingFlow: React.FC = () => {
 
               {/* Secure payment form simulation */}
               <form onSubmit={handlePaymentSubmit} className="space-y-4 pt-3">
+                {paymentError && (
+                  <div className="p-3.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-xl font-bold text-center leading-normal">
+                    {paymentError}
+                  </div>
+                )}
                 <div className="space-y-3">
                   <div>
                     <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Cardholder Name</label>
