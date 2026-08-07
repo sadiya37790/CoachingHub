@@ -40,10 +40,8 @@ export const AuthScreen: React.FC = () => {
       // Save mock session
       sessionStorage.setItem('trustcoach_mock_user', JSON.stringify(mockUser));
       
-      // Trigger AppState login update
-      if ((appState as any).logInMockUser) {
-        (appState as any).logInMockUser(mockUser);
-      }
+      // Trigger a full browser reload to reset in-memory variables and initialize fresh from sessionStorage
+      window.location.reload();
     }, 500);
   };
 

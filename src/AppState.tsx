@@ -206,9 +206,13 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       await signOut(auth!);
     } else {
       sessionStorage.removeItem('trustcoach_mock_user');
+      sessionStorage.removeItem('trustcoach_coaches');
+      sessionStorage.removeItem('trustcoach_sessions');
+      sessionStorage.removeItem('trustcoach_goals');
       setUser(null);
     }
-    setCurrentView('discovery');
+    // Hard refresh window to restore clean initial mock state
+    window.location.reload();
   };
 
   const setRole = (role: 'student' | 'coach') => {
