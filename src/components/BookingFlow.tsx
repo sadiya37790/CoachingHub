@@ -30,13 +30,13 @@ export const BookingFlow: React.FC = () => {
 
   const isLowTrust = selectedCoach.trustScore < 70;
   const label = getTrustLabel(selectedCoach.trustScore);
+  const isGuest = user?.uid?.startsWith('guest-') || user?.email === 'guest@demo.com';
 
   const handlePaymentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setPaymentError('');
 
     // Restrict payment in guest mode
-    const isGuest = user?.uid?.startsWith('guest-') || user?.email === 'guest@demo.com';
     if (isGuest) {
       setPaymentError('Action Denied: Guest accounts are restricted from depositing escrow. Please log out and sign up for a personal student account to test transaction flows.');
       return;
@@ -214,69 +214,91 @@ export const BookingFlow: React.FC = () => {
               </div>
 
               {/* Secure payment form simulation */}
-              <form onSubmit={handlePaymentSubmit} className="space-y-4 pt-3">
-                {paymentError && (
-                  <div className="p-3.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-xl font-bold text-center leading-normal">
-                    {paymentError}
+              {isGuest ? (
+                <div className="space-y-4 pt-3 text-center">
+                  <div className="w-12 h-12 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                    <Lock className="w-6 h-6" />
                   </div>
-                )}
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Cardholder Name</label>
-                    <input 
-                      type="text" 
-                      required 
-                      defaultValue="Rahul Dev"
-                      className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mock Card Details</label>
-                    <div className="relative">
-                      <CreditCard className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder="4242 4242 4242 4242"
-                        className="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Expiry</label>
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder="MM/YY"
-                        className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">CVC</label>
-                      <input 
-                        type="password" 
-                        required 
-                        placeholder="•••"
-                        className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
-                      />
-                    </div>
-                  </div>
+                  <div className="text-xs font-bold text-rose-400">Checkout Disabled for Guest Accounts</div>
+                  <p className="text-[10px] text-slate-400 leading-normal max-w-xs mx-auto">
+                    Guest credentials have read-only access. To prevent test data clutter, booking transactions are restricted.
+                  </p>
+                  <p className="text-[10px] text-slate-500 leading-normal font-semibold">
+                    Please log out and register a student account to test the complete payment & escrow flow.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setView('discovery')}
+                    className="w-full mt-2 py-2.5 bg-slate-800 hover:bg-slate-750 border border-slate-700 text-white font-semibold rounded-xl text-xs transition-all duration-300"
+                  >
+                    Return to Discovery
+                  </button>
                 </div>
+              ) : (
+                <form onSubmit={handlePaymentSubmit} className="space-y-4 pt-3">
+                  {paymentError && (
+                    <div className="p-3.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-xl font-bold text-center leading-normal">
+                      {paymentError}
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Cardholder Name</label>
+                      <input 
+                        type="text" 
+                        required 
+                        defaultValue="Rahul Dev"
+                        className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mock Card Details</label>
+                      <div className="relative">
+                        <CreditCard className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                        <input 
+                          type="text" 
+                          required 
+                          placeholder="4242 4242 4242 4242"
+                          className="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Expiry</label>
+                        <input 
+                          type="text" 
+                          required 
+                          placeholder="MM/YY"
+                          className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">CVC</label>
+                        <input 
+                          type="password" 
+                          required 
+                          placeholder="•••"
+                          className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-250 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-xs" 
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-                <button
-                  type="submit"
-                  disabled={processing}
-                  className={`w-full py-3 rounded-xl font-bold text-xs text-center text-white flex items-center justify-center space-x-2 transition-all-300 shadow-md ${
-                    processing 
-                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed' 
-                      : 'bg-indigo-600 hover:bg-indigo-600 cursor-pointer hover:shadow-indigo-500/20'
-                  }`}
-                >
-                  <Lock className="w-3.5 h-3.5" />
-                  <span>{processing ? 'Processing Securely...' : `Deposit ₹${selectedCoach.pricePerSession} in Escrow`}</span>
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    disabled={processing}
+                    className={`w-full py-3 rounded-xl font-bold text-xs text-center text-white flex items-center justify-center space-x-2 transition-all-300 shadow-md ${
+                      processing 
+                        ? 'bg-slate-800 text-slate-500 cursor-not-allowed' 
+                        : 'bg-indigo-600 hover:bg-indigo-500 cursor-pointer hover:shadow-indigo-500/20'
+                    }`}
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>{processing ? 'Processing Securely...' : `Deposit ₹${selectedCoach.pricePerSession} in Escrow`}</span>
+                  </button>
+                </form>
+              )}
               
               <div className="flex items-center justify-center space-x-1.5 text-slate-500 text-[10px]">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
