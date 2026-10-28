@@ -1,32 +1,56 @@
-# React + TypeScript + Vite
+Coaching Hub
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A coaching marketplace prototype that helps learners choose coaches they can trust. Its main idea is a Trust Score for every coach, built from verifiable signals instead of self-reported ratings.
 
-Currently, two official plugins are available:
+Live demo: coaching-hub-beta.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Built as a prototype for the TalentLync Full Stack Intern Drive candidate exercise.
 
-## React Compiler
+Features
+Trust Score: a weighted score for each coach, made up of:
+ID verification
+Certificates
+Sessions completed
+Verified outcomes
+Dispute history
+Trust Ledger: a view that shows how a coach's score was earned
+Escrow-conditional payments: payment is held and released only when conditions are met
+Guest access: browse coaches without logging in
+Tech stack
+React and TypeScript
+Vite
+Tailwind CSS
+Oxlint
+Deployed on Vercel
+Getting started
+bash
+git clone https://github.com/sadiya37790/CoachingHub.git
+cd CoachingHub
+npm install
+npm run dev
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Build for production:
 
-## Expanding the Oxlint configuration
+bash
+npm run build
+Project structure
+CoachingHub/
+├── public/        # Static assets
+├── src/           # React + TypeScript source
+├── index.html
+├── vite.config.ts
+└── package.json
+Why a Trust Score?
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+Star ratings are easy to inflate and say little about reliability. This prototype weights evidence a learner can rely on, such as verified identity, completed sessions and few disputes. It also ties payment to outcomes through escrow, so learners are protected.
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+Limitations
+Prototype only: data is demo data, and there is no real payment processing
+Trust Score weights are illustrative and not tuned on real data
+Roadmap
+Real authentication and a backend database
+Integration with a payments provider for escrow
+Dispute workflow and coach onboarding verification
+Author
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Shaik Sadiya, LinkedIn
